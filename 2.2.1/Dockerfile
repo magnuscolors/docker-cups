@@ -1,16 +1,22 @@
-FROM debian:stretch
+FROM ubuntu:16.04
 
-MAINTAINER Ann Arbor District Library <github@aadl.org>
+MAINTAINER Magnus <github@aadl.org>
 
 # Set apt sources list to a snapshot
-COPY sources.list /etc/apt/
+# COPY sources.list /etc/apt/
 
-RUN apt-get -o Acquire::Check-Valid-Until=false update && apt-get -y install \
-  cups=2.2.1* \
+RUN apt-get update && apt-get -y install \
+  cups \
   cups-filters \
   cups-pdf \
   whois \
+  software-properties-common \
   && rm -rf /var/lib/apt/lists/*
+
+RUN add-apt-repository ppa:simon-cadman/niftyrepo && \
+     apt-get update && \
+     apt-get -y install cupscloudprint
+
 
 # Remove backends that don't make sense for container
 RUN rm /usr/lib/cups/backend/parallel \
